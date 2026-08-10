@@ -1,0 +1,70 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+int stack[100];
+int top = -1;
+void push(int value)
+{
+    stack[++top] = value;
+}
+int pop()
+{
+    return stack[top--];
+}
+int main()
+{
+    char postfix[100];
+    int i, a, b, result;
+    printf("Enter postfix expression: ");
+    scanf("%s", postfix);
+    printf("\nIntermediate Results:\n");
+    for (i = 0; postfix[i] != '\0'; i++)
+    {
+        if (isdigit(postfix[i]))
+        {
+            result = postfix[i] - '0';
+            push(result);
+
+            printf("Push %d\n", result);
+        }
+        else
+        {
+            b = pop();
+            a = pop();
+            switch (postfix[i])
+            {
+                case '+':
+                    result = a + b;
+                    break;
+                case '-':
+                    result = a - b;
+                    break;
+                case '*':
+                    result = a * b;
+                    break;
+                case '/':
+                    if (b == 0)
+                    {
+                        printf("Error: Division by zero\n");
+                        return 1;
+                    }
+                    result = a / b;
+                    break;
+                default:
+                    printf("Invalid operator\n");
+                    return 1;
+            }
+            printf("%d %c %d = %d\n",
+                   a, postfix[i], b, result);
+
+            push(result);
+        }
+    }
+    if (top != 0)
+    {
+        printf("Invalid postfix expression\n");
+        return 1;
+    }
+    printf("\nFinal Result = %d\n", stack[top]);
+    return 0;
+}
