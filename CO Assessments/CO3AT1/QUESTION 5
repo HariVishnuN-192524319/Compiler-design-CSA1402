@@ -1,0 +1,51 @@
+#include <stdio.h>
+#include <string.h>
+int main()
+{
+    char operand1[20], operand2[20];
+    char type1[20], type2[20];
+    char op;
+    printf("Enter first operand: ");
+    scanf("%s", operand1);
+    printf("Enter type of first operand: ");
+    scanf("%s", type1);
+    printf("Enter operator (+, -, *, /): ");
+    scanf(" %c", &op);
+    printf("Enter second operand: ");
+    scanf("%s", operand2);
+    printf("Enter type of second operand: ");
+    scanf("%s", type2);
+    /*
+       Arithmetic operations are allowed
+       between int and float types.
+    */
+    if ((strcmp(type1, "int") == 0 ||
+         strcmp(type1, "float") == 0) &&
+        (strcmp(type2, "int") == 0 ||
+         strcmp(type2, "float") == 0))
+    {
+        if (op == '+' || op == '-' ||
+            op == '*' || op == '/')
+        {
+            printf("\nValid expression\n");
+            if (strcmp(type1, "float") == 0 ||
+                strcmp(type2, "float") == 0)
+            {
+                printf("Result type: float\n");
+            }
+            else
+            {
+                printf("Result type: int\n");
+            }
+        }
+        else
+        {
+            printf("\nInvalid operator\n");
+        }
+    }
+    else
+    {
+        printf("\nType error\n");
+    }
+    return 0;
+}
