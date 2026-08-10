@@ -1,0 +1,68 @@
+#include <stdio.h>
+#include <ctype.h>
+char expr[100];
+int pos = 0;
+/* E -> T E' */
+int E();
+/* E' -> + T E' | epsilon
+   inherited value is passed as parameter */
+int EPrime(int inherited)
+{
+    int t;
+    if (expr[pos] == '+')
+    {
+        pos++;
+        t = T();
+        return EPrime(inherited + t);
+    }
+    return inherited;
+}
+/* T -> F T' */
+int T()
+{
+    int f;
+    f = F();
+    return TPrime(f);
+}
+/* T' -> * F T' | epsilon
+   inherited value is passed as parameter */
+int TPrime(int inherited)
+{
+    int f;
+    if (expr[pos] == '*')
+    {
+        pos++;
+        f = F();
+        return TPrime(inherited * f);
+    }
+    return inherited;
+}
+/* F -> id */
+int F()
+{
+    int value;
+    if (isdigit(expr[pos]))
+    {
+        value = expr[pos] - '0';
+        pos++;
+        return value;
+    }
+    return 0;
+}
+/* E -> T E' */
+int E()
+{
+    int t;
+    t = T();
+    return EPrime(t);
+}
+int main()
+{
+    int result;
+    printf("Enter expression: ");
+    scanf("%s", expr);
+    result = E();
+    printf("Expression = %s\n", expr);
+    printf("Result = %d\n", result);
+    return 0;
+}
