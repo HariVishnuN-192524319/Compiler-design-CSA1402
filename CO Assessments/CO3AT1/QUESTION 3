@@ -1,0 +1,74 @@
+#include <stdio.h>
+#include <ctype.h>
+char expr[100];
+int pos = 0;
+/* Function declarations */
+int E();
+int EPrime(int inherited);
+int T();
+int TPrime(int inherited);
+int F();
+/* E -> T E' */
+int E()
+{
+    int t;
+    t = T();
+    return EPrime(t);
+}
+/* E' -> + T E' | epsilon */
+int EPrime(int inherited)
+{
+    int t;
+    if (expr[pos] == '+')
+    {
+        pos++;
+        t = T();
+        /* Pass inherited value to E' */
+        return EPrime(inherited + t);
+    }
+    return inherited;
+}
+/* T -> F T' */
+int T()
+{
+    int f;
+
+    f = F();
+    return TPrime(f);
+}
+/* T' -> * F T' | epsilon */
+int TPrime(int inherited)
+{
+    int f;
+    if (expr[pos] == '*')
+    {
+        pos++;
+        f = F();
+        /* Pass inherited value to T' */
+        return TPrime(inherited * f);
+    }
+    return inherited;
+}
+/* F -> digit */
+int F()
+{
+    int value;
+    if (isdigit(expr[pos]))
+    {
+        value = expr[pos] - '0';
+        pos++;
+        return value;
+    }
+    printf("Invalid expression\n");
+    return 0;
+}
+int main()
+{
+    int result;
+    printf("Enter expression: ");
+    scanf("%s", expr);
+    result = E();
+    printf("Expression = %s\n", expr);
+    printf("Result = %d\n", result);
+    return 0;
+}
