@@ -1,0 +1,90 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
+char expr[100];
+int pos = 0;
+double E();
+double T();
+double F();
+/* E → E + T | E - T | T */
+double E()
+{
+    double val = T();
+    while (expr[pos] == '+' || expr[pos] == '-')
+    {
+        char op = expr[pos++];
+        double t = T();
+        if (op == '+')
+            val = val + t;
+        else
+            val = val - t;
+    }
+    return val;
+}
+/* T → T * F | T / F | F */
+double T()
+{
+    double val = F();
+    while (expr[pos] == '*' || expr[pos] == '/')
+    {
+        char op = expr[pos++];
+        double f = F();
+        if (op == '*')
+            val = val * f;
+        else
+        {
+            if (f == 0)
+            {
+                printf("Error: Division by zero\n");
+                exit(1);
+            }
+            val = val / f;
+        }
+    }
+    return val;
+}
+/* F → (E) | digit */
+double F()
+{
+    double val = 0;
+    if (expr[pos] == '(')
+    {
+        pos++;
+        val = E();
+        if (expr[pos] != ')')
+        {
+            printf("Error: Missing )\n");
+            exit(1);
+        }
+        pos++;
+    }
+    else if (isdigit(expr[pos]))
+    {
+        while (isdigit(expr[pos]))
+        {
+            val = val * 10 + (expr[pos] - '0');
+            pos++;
+        }
+    }
+    else
+    {
+        printf("Error: Invalid expression\n");
+        exit(1);
+    }
+    return val;
+}
+int main()
+{
+    printf("Enter arithmetic expression: ");
+    fgets(expr, sizeof(expr), stdin);
+    double result = E();
+    while (expr[pos] == ' ' || expr[pos] == '\t')
+        pos++;
+    if (expr[pos] != '\n' && expr[pos] != '\0')
+    {
+        printf("Error: Invalid expression\n");
+        return 1;
+    }
+    printf("Final Result = %.2lf\n", result);
+    return 0;
+}
